@@ -15,26 +15,26 @@ Parametre ile çalıştır
     python3 main.py -w (dirlocation/) 3 
 
 
-Ilk Parametre ;
+Betik Taraması ;
 
     python3 main.py -f (filelocation/file.py)
     AntiBetik'i sadece 1 Betik için çalıştır , işi bitince kapat
     
-İkinci Parametre;
+Klasör Taraması;
 
     python3 main.py -d (dirlocation/)
     AntiBetik'i sadece bir konum içinde çalıştır . Konumdaki tüm betikleri tarasın . Işı bitince kapansın
     
-Üçüncü Parametre;
+Sürekli Tarama ;
 
-    python3 main.py -w (dirlocation/) 3
+    python3 main.py -w (dirlocation/) 3 # 3 saniyeyi ifade ediyor
     AntiBetik'i belirtilen konum içinde çalıştır . {} kadar saniye bekle , tekrar çalıştır . (İndirilenler klasöründe çalışmasına izin verebilirsiniz)
     
 Otomatik Başlatma;
 
     python3 main.py
     
-Main.py Arayı:
+Main.py Ayarı:
 
     src/__init__.py'ı düzenle . 
     
@@ -42,16 +42,25 @@ Main.py Arayı:
 Terminalden Başlat
 
     cd AntiBetik
-    sudo cp * /usr/bin/
+    mv main.py AntiBetik
+    nano AntiBetik.py (ilk satıra): #! /usr/bin/python3 (kayıt)
+    sudo chmod +x AntiBetik
+    sudo chmod +x src
+    sudo cp AntiBetik /usr/bin/
+    sudo cp -r src /usr/bin/
+    <Terminal Aç Kapat>
     
-    <Terminal aç kapat>
+    Yada :
     
 EXEC AntiBetik
 
     git clone https://github.com/BetikSonu/AntiBetik.elf
     cd AntiBetik.elf
     sudo chmod +x AntiBetik
-    sudo cp Antibetik /usr/bin
+    sudo cp Antibetik /usr/bin # Paramtereli halini start'da başlatabilirsiniz .
+    
+    
+    
     Hala qt hatalarını veriyor :D
     
     
