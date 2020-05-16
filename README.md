@@ -48,7 +48,8 @@ Terminalden Başlat
     
 EXEC AntiBetik
 
-    Repodan : https://github.com/BetikSonu/AntiBetik.elf
+    git clone https://github.com/BetikSonu/AntiBetik.elf
+    cd AntiBetik.elf
     sudo chmod +x AntiBetik
     sudo cp Antibetik /usr/bin
     Hala qt hatalarını veriyor :D
