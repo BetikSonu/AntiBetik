@@ -54,10 +54,10 @@ Terminalden Başlat
     
 EXEC AntiBetik
 
-    git clone https://github.com/BetikSonu/AntiBetik.elf
-    cd AntiBetik.elf
+    https://github.com/BetikSonu/AntiBetik/releases/tag/elf01 
+    
     sudo chmod +x AntiBetik
-    sudo cp Antibetik /usr/bin # Paramtereli halini start'da başlatabilirsiniz .
+    sudo cp Antibetik /usr/bin # Paramtereli ile terminalden başlatabilirsiniz.
     
     
     
