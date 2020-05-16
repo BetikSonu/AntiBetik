@@ -33,6 +33,8 @@ filters =   [
             ["from speech_recognition","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
             ["import pyaudio","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
             ["from pyaudio","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
+            ["from _winreg","Windows regedit dosyasına erişim için kullanılır !",7],
+            ["import _winreg","Windows regedit dosyasına erişim için kullanılır !",7],
 
                 
                 
