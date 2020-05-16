@@ -25,8 +25,7 @@ class PyAnti():
         #self.ignore_list.append("/benim/taranmasını/istemediğim/konumum") # <2 alt klasör içerisinde bu girdi var ise doğrudan atlacaktır
         
         self.ignore_list_app = []
-        self.white_add() # white.list 'i oluşturuyor | içerik varsa ignore_list_app 'e ekler .
-        self.ignore_add() 
+
         self.ignore_list.append(os.path.join(os.getcwd(),"src"))
         
         #self.ignore_list.append(os.path.join(os.getcwd()))
@@ -47,6 +46,8 @@ class PyAnti():
         self.os = modules.check().os
         self.print("Isletim sistemi {}".format(self.os))
         
+        self.white_add()
+        self.ignore_add() 
         self.gui_check() # PyQt5 Test
 
     def run(self,location=None,sleep=2):
@@ -59,8 +60,7 @@ class PyAnti():
             self.scan(location)
             self.print("Uyuyor")
             time.sleep(sleep)
-
-    
+ 
     def download(self,sleep=1):
         print("{} klasörü taranıyor : src/__init__.py'dan ayarları değişterebilirsiniz .".format(self.download_location))
         while 1:
@@ -74,10 +74,13 @@ class PyAnti():
             self.print("Uyuyor")
             time.sleep(sleep)
             
-
-
     def white_add(self):
-        with open("white.list","a+") as oku:
+        if self.os == "Unix":
+            self.white_list = os.path.join(self.home_location,".antibetik_white.list")
+        else:
+            self.white_list = "C:\\Users\\{}\\AppData\\AntiBetik_white.list".format(os.getlogin())
+
+        with open(self.white_list,"a+") as oku:
             oku.seek(0)
             oku=oku.read()
             if oku:
@@ -85,7 +88,12 @@ class PyAnti():
                     self.ignore_list_app.append(knm)
             
     def ignore_add(self):
-        with open("ignore.list","a+") as oku:
+        if self.os == "Unix":
+            self.ignore_list_loc = os.path.join(self.home_location,".antibetik_ignore.list")
+        else:
+            self.ignore_list_loc = "C:\\Users\\{}\\AppData\\AntiBetik_ignore.list".format(os.getlogin())
+
+        with open(self.ignore_list_loc,"a+") as oku:
             oku.seek(0)
             oku=oku.read()
         for ekle in oku.splitlines():
@@ -203,15 +211,13 @@ class PyAnti():
 
         dio_detay.exec_()
 
-
     def liste_uyari_ignore(self):
         konum = self.liste[0]["konum"]
         self.ignore_list_app.append(konum)
         self.dio.close()
         
-
     def liste_uyari_white(self):
-        with open("white.list","a") as yaz:
+        with open(self.white_list,"a") as yaz:
             yaz.write(self.liste[0]["konum"]+"\n")
         self.ignore_list_app.append(self.liste[0]["konum"])
         self.dio.close()
@@ -222,7 +228,6 @@ class PyAnti():
             os.remove(self.liste[0]["konum"])
             self.dio.close()
         
-
     def liste_uyari_cli(self,liste):
         while 1:
             os.system("clear")
@@ -255,18 +260,16 @@ class PyAnti():
                 break
             
             elif soralim == "w":
-                with open("white.list","a") as yaz:
+                with open(self.white_list,"a") as yaz:
                     yaz.write(konum+"\n")
                 self.ignore_list_app.append(konum)
                 print("\033[34mBeyaz listeye alındı .\033[0m")
                 break
 
-        
-
     def scan(self,location):
         if location == self.home_location:
             print("\033[31mPython3 paketlerinde potansiyel zararlı yazılım bulma ihtimali var . Dikkatli kullanın ve paketleri silmeyin .\033[0m")
-            time.sleep(2)
+            #time.sleep(2)
         for konum,klasor,dosyalar in os.walk(location):
             if dosyalar:
                 for fil in dosyalar:
@@ -277,7 +280,7 @@ class PyAnti():
                         tam_konum = os.path.join(konum,fil)
                         
                         if konum in self.ignore_list or tam_konum in self.ignore_list_app:
-                            print("IGNORE LIST | {} ".format(tam_konum))
+                            self.print("IGNORE LIST | {} ".format(tam_konum))
 
                         elif "/".join(konum.split("/")[:-1]) in self.ignore_list or "/".join(konum.split("/")[:-2]) in self.ignore_list:
                             self.print("\033[31mignore_list üst dalları : {}\033[0m".format(tam_konum))
@@ -285,8 +288,6 @@ class PyAnti():
                         else:
                             self.print("Taranan konum : {}".format(tam_konum))
                             self.oku_yonlendir(tam_konum,fil)
-
-
 
     def oku_yonlendir(self,konum,dosya):
         try:
@@ -300,8 +301,6 @@ class PyAnti():
         else:
             self.table(veri,dosya,konum)
         
-
-
     def table(self,icerik,dosya,konum):
         self.print("{} gözden geçiriliyor ".format(dosya))
         liste= []
@@ -329,9 +328,43 @@ class PyAnti():
         else:
             self.ignore_list_app.append(konum) # Bu zaten tarandı  . Tekrar taranmasına gerek yok ..
 
-
+    def oku_yonlendir_f(self,konum,dosya): # _f farklı çalışıyor . | -fd parametersi ile doğrudan betiği taramak istiyoruz . Betikde zararlı kod olsun olmasın menünün açılmasını sağlamak istiyorum . | -filedetail | -fd
         
+        try:
+            with open(konum) as veri:
+                veri=veri.read()
+        except KeyboardInterrupt:
+            sys.exit()
+        except UnicodeError:
+            print("\033[31mUnicode Error {} \033[0m".format(konum))
+        except Exception as hata:
+            print("\033[31mBilinmeyen hata : {}\033[0m".format(hata))
 
+        else:
+            self.table_f(veri,dosya,konum)
+        
+    def table_f(self,icerik,dosya,konum): # _f farklı çalışıyor . | -fd parametersi ile doğrudan betiği taramak istiyoruz . Betikde zararlı kod olsun olmasın menünün açılmasını sağlamak istiyorum . | -filedetail | -fd
+        self.print("{} gözden geçiriliyor ".format(dosya))
+        liste= []
+        eklenesi = False
+        for olasi in filters.filters:
+            abc = re.search(olasi[0],icerik.strip())
+            if abc:
+                veri = "\nDosya : "+dosya+"\nKonum : "+konum+"\n\nAçıklama : "+olasi[1]+"\nRISK : "+str(olasi[2])
+                json_veri = {"dosya":dosya,"konum":konum,"aciklama":olasi[1],"risk":olasi[2],"tehtit":olasi[0]}
+
+                liste.append(json_veri)
+                self.print(veri)
+        
+        if not liste:
+            json_veri = {"dosya":dosya,"konum":konum,"aciklama":"Herhangi birşey bulunamadı .","risk":0,"tehtit":"AntiBetik"}
+            liste.append(json_veri)        
+            
+        if self.gui :
+            self.liste_uyari(liste)
+            
+        else:
+            self.liste_uyari_cli(liste)
 
     def gui_check(self):
         try:
@@ -353,8 +386,6 @@ class PyAnti():
             gct.start()
             self.print("\033[33mQt Döngülendi (30m) !\033[0m")
             
-
-
     def gui_check_2(self):
         if not self.gui:
             for i_i in range(5):
@@ -367,7 +398,6 @@ class PyAnti():
                 except:
                     self.print("Qt'yi çalıştırma denemesi {}".format(i_i))
             
-
     def print(self,*argv):
         if self.debug:
             print(*argv)
@@ -379,7 +409,7 @@ class PyAnti():
 
 
 if __name__ == "__main__":
-    print("source.py | @BetikSonu | @raifpy")
+    print("source.py | @BetikSonu | @raifpy\n\n}¶DEV Notları : \n\n-f  && -d parametresi doğrudan oku_yonlendir üzerinden çalıştığı için ignore_list & white_list onlar için önemsiz .\nYani -f ve -fd parametreleri ile tararsanız hali hazırda white_liste'e aldığın verilerde gine zararlı kod bulacaktır .\n\nAslında fena değil ha :)")
 
 
 # NOT :

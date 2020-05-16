@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# PWDBY @raifpy
+# PWDBY @raifpy | @BetikSonu
 
 import src.sysargv,sys
 import src.source as source # Kaynak kodları dahil edildi
@@ -9,12 +9,6 @@ AntiBetik = source.PyAnti(debug=False) # Debug çıktılarını görmek istiyors
 
 
 def run(str=None):
-    
-    
-    if len(sys.argv) > 1: # Bash ile betik taraması yapmak için .
-        sysargv()        # Yönlendirme
-
-
 
     sleep = 3 # Döngü içerisinde tarama yapacak . Arada 3 saniye beklesin . 1 Saniye yapabilirsiniz
     
