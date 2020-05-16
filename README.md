@@ -10,15 +10,20 @@ Parametre ile çalıştır
 
     python3 main.py -f (filelocation/file.py)
     
+    python3 main.py -fd (filelocation/file.py)
+    
     python3 main.py -d (dirlocation/)
     
     python3 main.py -w (dirlocation/) 3 
-
+    
 
 Betik Taraması ;
 
     python3 main.py -f (filelocation/file.py)
     AntiBetik'i sadece 1 Betik için çalıştır , işi bitince kapat
+    
+    python3 main.py -fd (filelocation/file.py)
+    AntiBetik'i sadece 1 Betik için çalıştır , işi bitince kapat . Tehtit bulunmazsa bile menüyü aç
     
 Klasör Taraması;
 
@@ -38,6 +43,19 @@ Main.py Ayarı:
 
     src/__init__.py'ı düzenle . 
     
+While List Locatio:
+
+    Unix : 
+    
+    (homelocation)/(username)/.antibetik_white.list
+    /home/BetikSonu/.antibetik_white.list | .antibetik_ignore.list
+    
+    
+    Windows : 
+    (AppData)\AntiBetik_white.list
+    C:\Users\UseGnu\AppData\AntiBetik_white.list | AntiBetik_ignore.list
+
+
 
 Terminalden Başlat
 
@@ -54,7 +72,7 @@ Terminalden Başlat
     
 EXEC AntiBetik
 
-<a href="https://github.com/BetikSonu/AntiBetik/releases/tag/elf01" target="_blank">ELF</a>
+<a href="https://github.com/BetikSonu/AntiBetik/releases/tag/elf02" target="_blank">ELF</a>
     
     sudo chmod +x AntiBetik
     sudo cp Antibetik /usr/bin # Paramtereli ile terminalden başlatabilirsiniz.
