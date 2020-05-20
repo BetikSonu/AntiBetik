@@ -7,8 +7,10 @@ import shutil
 import threading
 from . import modules
 from . import filters
+from PyQt5 import QtCore
 import PyQt5.QtWidgets as ayq
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QPixmap
+
 
 __import__("colorama").init() # Shortcut
 # ----------| |-----------| |------------| |-------- #
@@ -47,7 +49,8 @@ class PyAnti():
         self.print("Isletim sistemi {}".format(self.os))
         
         self.white_add()
-        self.ignore_add() 
+        self.ignore_add()
+        self.icon_add()
         self.gui_check() # PyQt5 Test
 
     def run(self,location=None,sleep=2):
@@ -99,6 +102,17 @@ class PyAnti():
         for ekle in oku.splitlines():
             self.ignore_list.append(ekle)
     
+    def browse_f(self):
+        file_,_ = ayq.QFileDialog.getOpenFileName(ayq.QDialog(),'Single File',self.home_location)
+        if file_:
+            self.oku_yonlendir_f(file_,file_.split("/")[::-1][0])
+
+    def browse(self):
+        file_,_ = ayq.QFileDialog.getOpenFileName(ayq.QDialog(),'Single File',self.home_location)
+        if file_:
+            self.oku_yonlendir(file_,file_.split("/")[::-1][0])
+
+
     def liste_uyari(self,liste):
         self.liste = liste
         self.dio = ayq.QDialog()
@@ -366,6 +380,20 @@ class PyAnti():
         else:
             self.liste_uyari_cli(liste)
 
+    def icon_add(self):
+        if self.os == "Unix":
+            self.icon_location = os.path.join(self.home_location,".antibetik.png")
+        else:
+            self.icon_location = "C:\\Users\\{}\\AppData\\antibetik.pnh".format(os.getlogin())
+
+        if not os.path.exists(self.icon_location):
+            if os.path.exists("antibetik.png"):
+                __import__("shutil").copy("antibetik.png",self.icon_location)
+            else:
+                print("Uygulama Icon'u bulunamadı !")
+                self.icon_location = " Nasıl anlatacağım sana bunu qt bey :(( "
+
+
     def gui_check(self):
         try:
             if self.os == "Unix" and not os.popen("echo ${XDG_SESSION_TYPE}").read().strip("\n"):
@@ -374,30 +402,17 @@ class PyAnti():
                 return
             
             self.app = ayq.QApplication(["PyAnti"])
-            self.app.setWindowIcon(QIcon("antibetik.png"))
+            self.app.setWindowIcon(QIcon(self.icon_location))
+            
             self.gui = True
             self.print("\033[32mQt Başlatıldı !\033[0m")
+            return
 
-        except:
-            self.print("\033[31mQt Başlatılamadı !\033[0m")
+        except Exception as hata:
+            input("\033[31mQt Başlatılamadı !\033[0m \n\n"+str(hata)+"\n\n\t[ENTER]")
             self.gui = False
-            gct=threading.Thread(target=self.gui_check_2)
-            gct.daemon=True
-            gct.start()
-            self.print("\033[33mQt Döngülendi (30m) !\033[0m")
-            
-    def gui_check_2(self):
-        if not self.gui:
-            for i_i in range(5):
-                time.sleep(60*30)
-                try:
-                    self.app = ayq.QApplication(["PyAnti"])
-                    self.gui = True
-                    self.print("\033[32mQt Başlatıldı !\033[0m")
-                    break
-                except:
-                    self.print("Qt'yi çalıştırma denemesi {}".format(i_i))
-            
+            return
+                      
     def print(self,*argv):
         if self.debug:
             print(*argv)

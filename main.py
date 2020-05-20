@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*- 
 
-import src
+#import src
 # Dont forget . You can't trust this application for protect your device
 # src/__init__.py 'ı editle .
 
 try:
-    src.run()
+
+    import sys,src
 
 except (KeyboardInterrupt,SystemExit):
-    exit()
+    sys.exit()
 
 except Exception as hata:
     print("Hata : ",str(hata))
