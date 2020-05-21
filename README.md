@@ -72,7 +72,7 @@ Terminalden Başlat
     
 EXEC AntiBetik
 
-<a href="https://github.com/BetikSonu/AntiBetik/releases/tag/elf02" target="_blank">ELF</a>
+<a href="https://github.com/BetikSonu/AntiBetik/releases" target="_blank">ELF</a>
     
     sudo chmod +x AntiBetik
     sudo cp Antibetik /usr/bin # Paramtereli ile terminalden başlatabilirsiniz.
