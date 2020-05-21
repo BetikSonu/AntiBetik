@@ -479,7 +479,7 @@ class PyAnti():
                 self.gui = False
                 return
             
-            self.app = ayq.QApplication(["PyAnti"])
+            self.app = ayq.QApplication(["AntiBetik | Gui"])
             self.app.setWindowIcon(QIcon(self.icon_location))
             
             self.gui = True
