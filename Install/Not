@@ -1,0 +1,7 @@
+sudo python3 install.py 
+
+Python betiği işe yaramazsa < bash'e antibetik' yazınca çalışmıyorsa  > ;
+
+sudo bash install.sh
+
+@raifpy

@@ -42,6 +42,10 @@ class check():
         return "C:\\Users\\{}\\Desktop".format(os.getlogin()) if os.name == "nt" else os.popen("xdg-user-dir DESKTOP").read().strip("\n")
 
 
+with open("{}".format( os.path.join( check().ds , "PID" ) ) ,"w") as pid:
+    pid.write("{}".format(os.getpid()))
+
+
 # NOT :
 #
 # Bütün filtereyi filters.py'dan alıyor . İçeriğini istediğiniz gibi değiştirebilirsiniz

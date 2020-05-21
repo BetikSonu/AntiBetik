@@ -1,0 +1,12 @@
+pyinstaller --onefile AntiBetik.py 
+
+Yada 
+
+pyinstaller --onefile -i iconum.ico AntiBetik.py
+
+Unutma :
+
+AntiBetik açıldığı gibi çalışmaz , parametre ile çalışır .
+
+https://github.com/BetikSonu/AntiBetik
+

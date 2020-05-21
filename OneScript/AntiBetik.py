@@ -1,3 +1,6 @@
+#! /usr/bin/python3
+# @raifpy | @BetikSonu
+
 import os
 import re
 import sys
@@ -5,14 +8,85 @@ import json
 import time
 import shutil
 import threading
-from . import modules
-from . import filters
+#from . import modules
+#from . import filters
 import PyQt5.QtWidgets as ayq
 from PyQt5.QtGui import QIcon
+__import__("colorama").init()   # PyInstaller Error
+
+filters =   [
+            ["import base64","Base64 modülü , kodları base64 formatında encodelayarak kullanıcının okuyamayacağı hale getirir !",2],
+            ["from base64","Base64 modülü , kodları base64 formatında encodelayarak kullanıcının okuyamayacağı hale getirir !",2],
+            ["exec","Python kodlarını harici olarak çalıştırlmaya yarayan eleman . \n\tÖrnek  : exec('for i in os.listdir():os.remove(i)')",4],
+            ["eval","Python kodlarını harici olarak çalıştırlmaya yarayan eleman . \n\tÖrnek  : eval('for i in os.listdir():os.remove(i)')",4],
+            ["from os import system","system() nesnesi doğrudan terminale erişim sağlar !\n\tÖrnek  : system('shutdown now')",2],
+            ["import os.system","system() nesnesi doğrudan terminale erişim sağlar !\n\tÖrnek  : os.system('shutdown now')",2],
+            ["os.system","os.system() nesnesi doğrudan terminale erişim sağlar !\n\tÖrnek  : os.system('shutdown now')",2],
+            ["cryptography","Sadece parola ile çözülebilen şifreleme kütüphanesi ! \n\tExec/Eval ile kullanılıyorsa çalıştırmayın !",6],
+            ["import daemon","Python betiğini arkaplanda çalıştırmaya yarayan kütüphane\n\törnek  : with daemon.DaemonContext(): (Altındaki tüm kodlar arkaplanda çalışacak) !",6],
+            ["import pynput","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",8],
+            ["from pynput","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",8],
+            ["import pyHook","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",8],
+            ["from pyHook","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",8],
+            ["import pythoncom","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",7],
+            ["from pythoncom","Fare-Klavye hareketlerini takip etmek için kullanılan kütüphane !",7],
+            ["import win32crypt","Windows sistemlerde Chromium tabanlı tarayıcıların password | cookies'lerini yürütmek için kullanılan kütüphane !",8],
+            ["from win32crypt","Windows sistemlerde Chromium tabanlı tarayıcıların password | cookies'lerini yürütmek için kullanılan kütüphane !",8],
+            ["import win32console","Windows'da CMD'iyi gizlemek için kullanılan kütüphane !",5],
+            ["from win32console","Windows'da CMD'iyi gizlemek için kullanılan kütüphane !",5],
+            ["import threading","Python kodlarını arkaplanda çalıştırmaya yarar ",2],
+            ["from threading","Python kodlarını arkaplanda çalıştırmaya yarar ",2],
+            ["import _threading","Python kodlarını arkaplanda çalıştırmaya yarar ",2],
+            ["from _threading","Python kodlarını arkaplanda çalıştırmaya yarar ",2],
+            ["import Crypto","Linux sistemlerde Chromium verilerini decrypt etmek için kullanılan eleman !",8],
+            ["from Crypto","Linux sistemlerde Chromium verilerini decrypt etmek için kullanılan eleman !",8],
+            ["import socket","Port açma , bağlanma için kullanılabilir ! <botnet>",3],
+            ["from socket","Port açma , bağlanma için kullanılabilir ! <botnet>",3],
+            ["os.walk","tree yerine geçerek sistemdeki tüm klasörleri dsoyaları sisteler .\n\tFidyeciler için güzel fonksiyon",3],
+            ["from os import walk","tree yerine geçerek sistemdeki tüm klasörleri dsoyaları sisteler .\n\tFidyeciler için güzel fonksiyon",3],
+            ["exec.base64.b64decode","Metasploit Python Payload biçemi !\n\tÇALIŞTIRMAYIN !",7],
+            ["import speech_recognition","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
+            ["from speech_recognition","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
+            ["import pyaudio","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],
+            ["from pyaudio","Mikrofonu dinlemek için kullanılabilen kütüphane !",5],      
+            ]
 
 
-__import__("colorama").init() # Shortcut
-# ----------| |-----------| |------------| |-------- #
+# NOT :
+#
+# Filterelere istediğiniz özeleştirmeyi yapabilrisiniz 
+# Risk derecesi 5 >= 'ise tehlikeli olarak işaretlenir
+#
+
+
+class check():
+    
+    @property
+    def os(cls):
+        return "Windows" if os.name == "nt" else "Unix" # Else : Mac-Gnu | Unix ~
+
+    @property
+    def dw(cls):
+        return "C:\\Users\\{}\\Downloads".format(os.getlogin()) if os.name == "nt" else os.popen("xdg-user-dir DOWNLOAD").read().strip("\n")
+
+    @property
+    def hm(cls):
+        return "C:\\Users\\{}".format(os.getlogin()) if os.name == "nt" else os.popen("xdg-user-dir").read().strip("\n")
+
+    @property
+    def ds(cls):
+        return "C:\\Users\\{}\\Desktop".format(os.getlogin()) if os.name == "nt" else os.popen("xdg-user-dir DESKTOP").read().strip("\n")
+
+
+def linux_noti(baslik,icerik):
+    if not os.name == "nt":
+        os.popen("notify-send -a AntiBetik '{baslik}' '{icerik}'".format(baslik=baslik,icerik=icerik))
+
+
+with open("{}".format( os.path.join( check().ds , "PID" ) ) ,"w") as pid:
+    pid.write("{}".format(os.getpid()))
+    linux_noti(os.getpid(),"AntiBetik Python PID")
+
 class PyAnti():
     def __init__(self,debug=False):
         self.debug = bool(debug)
@@ -35,16 +109,16 @@ class PyAnti():
         self.print("\033[31mIgnore List : \033[0m {} ... ".format(str(self.ignore_list)[:50]))
         
 
-        self.download_location = modules.check().dw
+        self.download_location = check().dw
         self.print("Indirilenler {} olarak ayarlandı".format(self.download_location))
         
-        self.home_location = modules.check().hm
+        self.home_location = check().hm
         self.print("Ev {} olarak ayarlandı".format(self.home_location))
         
-        self.desktop_location = modules.check().ds
+        self.desktop_location = check().ds
         self.print("Desktop {} olarak ayarlandı".format(self.desktop_location))
         
-        self.os = modules.check().os
+        self.os = check().os
         self.print("Isletim sistemi {}".format(self.os))
         
         self.white_add()
@@ -111,7 +185,6 @@ class PyAnti():
         if file_:
             self.oku_yonlendir(file_,file_.split("/")[::-1][0])
 
-    
     def browse_d(self):
         file_ = ayq.QFileDialog.getExistingDirectory(ayq.QDialog(),'AntiBetik | Browse',self.home_location)
         
@@ -324,7 +397,7 @@ class PyAnti():
         self.print("{} gözden geçiriliyor ".format(dosya))
         liste= []
         eklenesi = False
-        for olasi in filters.filters:
+        for olasi in filters:
             abc = re.search(olasi[0],icerik.strip())
             if abc:
                 veri = "\nDosya : "+dosya+"\nKonum : "+konum+"\n\nAçıklama : "+olasi[1]+"\nRISK : "+str(olasi[2])
@@ -366,7 +439,7 @@ class PyAnti():
         self.print("{} gözden geçiriliyor ".format(dosya))
         liste= []
         eklenesi = False
-        for olasi in filters.filters:
+        for olasi in filters:
             abc = re.search(olasi[0],icerik.strip())
             if abc:
                 veri = "\nDosya : "+dosya+"\nKonum : "+konum+"\n\nAçıklama : "+olasi[1]+"\nRISK : "+str(olasi[2])
@@ -422,22 +495,84 @@ class PyAnti():
         if self.debug:
             print(*argv)
 
-                
-                
-
 
 
 
 if __name__ == "__main__":
-    print("source.py | @BetikSonu | @raifpy\n\n}¶DEV Notları : \n\n-f  && -d parametresi doğrudan oku_yonlendir üzerinden çalıştığı için ignore_list & white_list onlar için önemsiz .\nYani -f ve -fd parametreleri ile tararsanız hali hazırda white_liste'e aldığın verilerde gine zararlı kod bulacaktır .\n\nAslında fena değil ha :)")
+    def else_():
+        print("""
+    Kullanım :
+
+    -f location/pyt.py | <file>
+    -fd location/pyt.py | <filename> <detail>
+    -d /location | <dir>
+    -w /location 10 (sleep int) | <while>
+    -bf <Browse file>
+    -bfd <Browse file>
+    -bd <Browse dir>
 
 
-# NOT :
-#
-# Bütün filtereyi filters.py'dan alıyor . İçeriğini istediğiniz gibi değiştirebilirsiniz
-# internetden bir python betiği indirip içeriği için PyAnti | AntiBetik 'e güvenmeyi düşünüyorsanız bundan derhal vazgeçin .
-# AntiBetik Gnu kullanıcıları için yardımcı bir araçtır . Ama gerçek bir antivirüs değildir . Çalışma mantığı oldukça basittir . Çok kolay atlatılabilir , basit hatalar yaparak zararlı kodları görmezden gelebilir
-# Program hakkında herhangi bir öneriniz var ise @SonBetik (Telegram) yada @raifpy (Telegram) 'dan ulaşabilirsiniz .
-#
-# Değerlisiniz .
+        {dosya} -f /home/betiksonu/files/test.py
+        
+        {dosya} -fd /home/betiksonu/files/test.py [Detail]
+        
+        {dosya} -d /home/betiksonu/file
+        
+        {dosya} -w /home/betiksonu/file 10
+        
+        {dosya} -bf (Browse File )
+        
+        {dosya} -bfd (Browse File ) [Detail]
 
+        {dosya} -bd (Browse Dir)
+        
+""".format(dosya=sys.argv[0]))
+
+    if len(sys.argv) > 1:
+        AntiBetik = PyAnti(debug=False) # Debug deaktif
+
+        argv = sys.argv[:]
+        if argv[1] == "-bf": # Browse File | ignore whitelist
+            linux_noti("Browse File","Sadece tehtit seviyesi yeterli bulunursa arayüz açılacaktır")
+            AntiBetik.browse() # browser file but detail | anyone file 
+
+        elif argv[1] == "-bfd": # Browse File Detail | ignore whitelist
+            linux_noti("Browse File","Tehtit bulunsun yada bulunmasın arayüz açılacak .")
+            AntiBetik.browse_f() # browser file but detail | anyone file | not importand file is danger
+
+        elif argv[1] == "-bd": # Browse Dir | Not detail ! | NOT IGNORE WHITELIST !
+            linux_noti("Browse Dir","Taranacak dosya (white_list | ignore_list geçerli )")
+            AntiBetik.browse_d() # directory
+
+        elif argv[1] == "-f" and len(argv) > 2:
+            if os.path.isfile(argv[2]):
+                print("-f Parametresi Açık . Sadece tehtit algılanırsa menü açılacaktır .\n-fd parametresini kullanabilirsin .")
+                AntiBetik.oku_yonlendir(argv[2],argv[2].split("/")[::-1][0])
+            else:else_()
+
+        elif argv[1] == "-fd" and len(argv) > 2:
+            if os.path.isfile(argv[2]):
+                AntiBetik.oku_yonlendir_f(argv[2],argv[2].split("/")[::-1][0])
+            else:else_()
+
+    
+
+
+
+        elif argv[1] == "-d" and len(argv) > 2:
+            if os.path.isdir(argv[2]):
+                AntiBetik.scan(argv[2])
+            else:else_()
+        
+        elif argv[1] == "-w" and len(argv) > 3 and argv[3].isnumeric():
+            if os.path.isdir(argv[2]):
+                linux_noti("Sonsuz Tarama","{} saniyede bir {} konumu taranacak".format(argv[3],argv[2]))
+                AntiBetik.run(location=argv[2],sleep=int(argv[3]))
+            else:else_()
+        
+        else:else_()
+            
+    else:
+        else_()
+
+    sys.exit()
