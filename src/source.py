@@ -7,9 +7,8 @@ import shutil
 import threading
 from . import modules
 from . import filters
-from PyQt5 import QtCore
 import PyQt5.QtWidgets as ayq
-from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtGui import QIcon
 
 
 __import__("colorama").init() # Shortcut
