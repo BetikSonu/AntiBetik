@@ -16,6 +16,11 @@ Parametre ile çalıştır
     
     python3 main.py -w (dirlocation/) 3 
     
+    python3 main.py -bf | Browse File 
+    
+    python3 main.py -bfd | Browse File Detail
+    
+    python3 main.py -bd | Browse Dir
 
 Betik Taraması ;
 
