@@ -11,7 +11,7 @@ import threading
 #from . import modules
 #from . import filters
 import PyQt5.QtWidgets as ayq
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QFont
 #__import__("colorama").init()   # PyInstaller Error
 
 filters =   [
@@ -176,12 +176,12 @@ class PyAnti():
             self.ignore_list.append(ekle)
     
     def browse_f(self):
-        file_,_ = ayq.QFileDialog.getOpenFileName(ayq.QDialog(),'AntiBetik | Browse',self.home_location)
+        file_,_ = ayq.QFileDialog.getOpenFileName(None,'AntiBetik | Browse',self.home_location)
         if file_:
             self.oku_yonlendir_f(file_,file_.split("/")[::-1][0])
 
     def browse(self):
-        file_,_ = ayq.QFileDialog.getOpenFileName(ayq.QDialog(),'Single File',self.home_location)
+        file_,_ = ayq.QFileDialog.getOpenFileName(None,'AntiBetik | Browse',self.home_location)
         if file_:
             self.oku_yonlendir(file_,file_.split("/")[::-1][0])
 
@@ -479,7 +479,7 @@ class PyAnti():
                 self.gui = False
                 return
             
-            self.app = ayq.QApplication(["PyAnti"])
+            self.app = ayq.QApplication(["AntiBetik | GUI"])
             self.app.setWindowIcon(QIcon(self.icon_location))
             
             self.gui = True
@@ -494,6 +494,109 @@ class PyAnti():
     def print(self,*argv):
         if self.debug:
             print(*argv)
+
+    def guimenu(self):
+        self.dio = ayq.QDialog()
+        self.dio.setMinimumHeight(220)
+        self.dio.setMinimumWidth(420)
+        self.dio.setMaximumHeight(220)
+        self.dio.setMaximumWidth(420)
+        self.dio.setGeometry(430,200,420,220)
+
+        """antibetik = ayq.QLabel("AntiBetik",self.dio)
+        antibetik.setStyleSheet("font-family : verdana; font-size : 40px")
+        antibetik.setGeometry(20,220,400,50)
+
+        for_ = ayq.QLabel("for",self.dio)
+        for_.setGeometry(120,270,100,20)
+
+        betiksonu = ayq.QLabel("@BetikSonu",self.dio)
+        betiksonu.setStyleSheet("font-family : Monaco; font-size : 25px ; color : orange")
+        betiksonu.setGeometry(150,240,200,50)
+
+
+        antibetik.show()
+        for_.show()
+        betiksonu.show()"""
+        
+
+        browsegroup = ayq.QGroupBox("Browse Menu",self.dio)
+        browsegroup.setGeometry(10,10,200,200)
+        
+        browselayout = ayq.QGridLayout()
+        browsegroup.setLayout(browselayout)
+
+        bf_buton = ayq.QPushButton("BrowseFile")
+        bf_buton.clicked.connect(self.browse)
+        
+        bfd_buton = ayq.QPushButton("BrowseFile Detail")
+        bfd_buton.clicked.connect(self.browse_f)
+
+
+        bd_buton = ayq.QPushButton("BrowseDir")
+        bd_buton.clicked.connect(self.browse_d)
+
+        ara=ayq.QLabel(" ")
+
+
+        browselayout.addWidget(bf_buton)
+        browselayout.addWidget(bfd_buton)
+        #browselayout.addWidget(ara)
+        browselayout.addWidget(bd_buton)
+
+        # --------------
+
+        whilegroup = ayq.QGroupBox("While Menu",self.dio)
+        whilegroup.setGeometry(220,10,200,200)
+        whilelayout = ayq.QGridLayout()
+        whilegroup.setLayout(whilelayout)
+
+        whilesec = ayq.QLineEdit("5")
+        whilesec.setAccessibleDescription("Döngü saniyesi = 10")
+        whilesec.setToolTip("Her X saniyede konumu baştan tarayacak")
+        
+        whiledir = ayq.QLineEdit(self.desktop_location)
+        whiledir.setAccessibleDescription("Döngülü taranacak konum")
+        whiledir.setToolTip("Döngüül olarak taranacak konum ")
+
+        whilebuton=ayq.QPushButton("Başlat")
+        whilebuton.setIcon(QIcon(self.icon_location))
+        whilebuton.setToolTip("Haydi Başlat ..")
+        whilebuton.clicked.connect(self.guimenu_while)
+
+        #ara2 = ayq
+
+        whilelayout.addWidget(whilesec)
+        whilelayout.addWidget(whiledir)
+        #whilelayout.addWidget(ara2)
+        whilelayout.addWidget(whilebuton)
+
+        self.whilesec = whilesec
+        self.whiledir = whiledir
+
+
+
+
+
+        self.dio.show()
+        self.dio.exec_()
+
+    def guimenu_while(self):
+        whilesec = self.whilesec.text()
+        whiledir = self.whiledir.text()
+
+        if not whilesec.isnumeric():
+            ayq.QMessageBox.warning(self.dio,"Yanlış Değer !","Döngü Sleep değeri rakam olmak zorunda !")
+            return
+
+
+        if not os.path.isdir(whiledir):
+            ayq.QMessageBox.warning(self.dio,"Yanlış Değer !","Konum dir olmak zorunda ! (klasör)")
+            return
+        
+        self.dio.close()
+        linux_noti("Döngülü Tarama","{} konumu {} saniyede bir tekrar tekrar kontrol edilecek".format(whiledir,whilesec))
+        self.run(location=whiledir,sleep=int(whilesec))
 
 
 
@@ -571,8 +674,12 @@ if __name__ == "__main__":
             else:else_()
         
         else:else_()
-            
     else:
-        else_()
+        AntiBetik = PyAnti()
+        if AntiBetik.gui:
+            AntiBetik.guimenu()
+        else:
+            else_()
+            
 
     sys.exit()

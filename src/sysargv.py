@@ -30,28 +30,23 @@ Kullanım :
     
 """.format(dosya=sys.argv[0]))
 
-def linux_noti(baslik,icerik):
-    if not os.name == "nt":
-        os.popen("notify-send -a AntiBetik '{baslik}' '{icerik}'".format(baslik=baslik,icerik=icerik))
 
-
-
+from . import source
+AntiBetik = source.PyAnti(debug=False) # Debug deaktif
 
 if len(sys.argv) > 1:
-    from . import source
-    AntiBetik = source.PyAnti(debug=False) # Debug deaktif
-
+    
     argv = sys.argv[:]
     if argv[1] == "-bf": # Browse File | ignore whitelist
-        linux_noti("Browse File","Sadece tehtit seviyesi yeterli bulunursa arayüz açılacaktır")
+        source.linux_noti("Browse File","Sadece tehtit seviyesi yeterli bulunursa arayüz açılacaktır")
         AntiBetik.browse() # browser file but detail | anyone file 
 
     elif argv[1] == "-bfd": # Browse File Detail | ignore whitelist
-        linux_noti("Browse File","Tehtit bulunsun yada bulunmasın arayüz açılacak .")
+        source.linux_noti("Browse File","Tehtit bulunsun yada bulunmasın arayüz açılacak .")
         AntiBetik.browse_f() # browser file but detail | anyone file | not importand file is danger
 
     elif argv[1] == "-bd": # Browse Dir | Not detail ! | NOT IGNORE WHITELIST !
-        linux_noti("Browse Dir","Taranacak dosya (white_list | ignore_list geçerli )")
+        source.linux_noti("Browse Dir","Taranacak dosya (white_list | ignore_list geçerli )")
         AntiBetik.browse_d() # directory
 
     elif argv[1] == "-f" and len(argv) > 2:
@@ -76,14 +71,17 @@ if len(sys.argv) > 1:
     
     elif argv[1] == "-w" and len(argv) > 3 and argv[3].isnumeric():
         if os.path.isdir(argv[2]):
-            linux_noti("Sonsuz Tarama","{} saniyede bir {} konumu taranacak".format(argv[3],argv[2]))
+            source.linux_noti("Sonsuz Tarama","{} saniyede bir {} konumu taranacak".format(argv[3],argv[2]))
             AntiBetik.run(location=argv[2],sleep=int(argv[3]))
         else:else_()
     
     else:else_()
         
 else:
-    else_()
+    if AntiBetik.gui:
+        AntiBetik.guimenu()
+    else:
+        else_()
 
 sys.exit()
 
